@@ -6,6 +6,10 @@ nats:
 
     fileStorage:
       enabled: true
-      storageDirectory: /data/
+      storageDirectory: /nats-js-data/
       existingClaim: nats-js-disk
       claimStorageSize: 3Gi
+natsbox:
+  enabled: false
+  image: nats:alpine
+  pullPolicy: IfNotPresent
