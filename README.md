@@ -1,4 +1,4 @@
-# nats-jetstream-ts-kubernetes-impl
+# NATS JetStream using TypeScript in Kubernetes
 
 An implementation of some helper abstract classes in TypeScript to use NATS JetStream in Kubernetes by using official NATS client package "nats.js".
 
