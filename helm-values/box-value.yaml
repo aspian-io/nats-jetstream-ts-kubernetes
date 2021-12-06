@@ -1,0 +1,4 @@
+natsbox:
+  enabled: false
+  image: nats:alpine
+  pullPolicy: IfNotPresent
