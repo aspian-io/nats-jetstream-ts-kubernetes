@@ -6,7 +6,7 @@ console.clear();
 // create a codec
 const jc = JSONCodec();
 
-connect( { servers: 'http://localhost:4222' } )
+connect( { servers: 'http://localhost:4222', name: 'adrian' } )
   .then( async ( nc ) => {
     console.log( `publisher connected to ${ nc.getServer() }` );
 

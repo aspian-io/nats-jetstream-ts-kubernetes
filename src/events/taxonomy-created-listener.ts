@@ -1,6 +1,5 @@
 import { JsMsg } from "nats";
 import { Listener } from "./base-listener";
-import { Streams } from "./streams";
 import { Subjects } from "./subjects";
 import { TaxonomyCreatedEvent } from "./taxonomy-created-event";
 

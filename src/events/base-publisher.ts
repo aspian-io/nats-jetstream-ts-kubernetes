@@ -1,15 +1,12 @@
 import { JSONCodec, NatsConnection } from 'nats';
-import { Streams } from './streams';
 import { Subjects } from "./subjects";
 
 interface Event {
-  stream: Streams;
   subject: Subjects;
   data: any;
 }
 
 export abstract class Publisher<T extends Event> {
-  abstract stream: T[ 'stream' ];
   abstract subject: T[ 'subject' ];
   private natsConnection: NatsConnection;
 
@@ -20,8 +17,6 @@ export abstract class Publisher<T extends Event> {
   async publish ( data: T[ 'data' ] ): Promise<void> {
     // create a codec
     const jc = JSONCodec();
-    const jsm = await this.natsConnection.jetstreamManager();
-    await jsm.streams.add( { name: this.stream.toLowerCase(), subjects: [ this.subject.toLowerCase() ] } );
     const jetStreamClient = this.natsConnection.jetstream();
 
     try {

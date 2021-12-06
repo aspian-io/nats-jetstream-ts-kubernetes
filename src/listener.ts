@@ -3,7 +3,7 @@ import { TaxonomyCreatedListener } from './events/taxonomy-created-listener';
 
 console.clear();
 
-connect( { servers: 'http://localhost:4222' } )
+connect( { servers: 'http://localhost:4222', name: 'adrian' } )
   .then( async ( nc ) => {
     console.log( `listener connected to ${ nc.getServer() }` );
 

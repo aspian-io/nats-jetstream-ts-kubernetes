@@ -36,6 +36,8 @@ export abstract class Listener<T extends Event> {
       this.consumerOptions()
     );
 
+    subscription
+
     const done = ( async () => {
       for await ( const msg of subscription ) {
         console.log( `Message received: ${ this.subject } / ${ this.queueGroupName }` );
