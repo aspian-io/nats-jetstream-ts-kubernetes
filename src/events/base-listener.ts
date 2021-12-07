@@ -41,7 +41,7 @@ export abstract class Listener<T extends Event> {
       await jsm.streams.info( this.stream );
     } catch ( err ) {
       // stream not found so we add it
-      await jsm.streams.add( { name: this.stream, subjects: [ `${ this.stream }.*` ] } );
+      await jsm.streams.add( { name: this.stream, subjects: [ `*.>` ] } );
     }
 
     const jetStreamClient = this.natsConnection.jetstream();
