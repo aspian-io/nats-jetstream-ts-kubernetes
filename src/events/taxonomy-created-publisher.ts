@@ -4,6 +4,6 @@ import { Subjects } from "./subjects";
 import { TaxonomyCreatedEvent } from "./taxonomy-created-event";
 
 export class TaxonomyCreatedPublisher extends Publisher<TaxonomyCreatedEvent> {
-  stream: Streams.Taxonomy = Streams.Taxonomy;
+  stream: Streams = Streams.Taxonomy;
   subject: Subjects.TaxonomyCreated = Subjects.TaxonomyCreated;
 }

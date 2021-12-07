@@ -3,13 +3,12 @@ import { Streams } from './streams';
 import { Subjects } from "./subjects";
 
 interface Event {
-  stream: Streams;
   subject: Subjects;
   data: any;
 }
 
 export abstract class Publisher<T extends Event> {
-  abstract stream: T[ 'stream' ];
+  abstract stream: Streams;
   abstract subject: T[ 'subject' ];
   private natsConnection: NatsConnection;
 
@@ -33,11 +32,11 @@ export abstract class Publisher<T extends Event> {
     const jetStreamClient = this.natsConnection.jetstream();
 
     try {
-      const pub = await jetStreamClient.publish( this.subject, jc.encode( data ) );
-      console.log( 'Event published to subject', this.subject );
+      await jetStreamClient.publish( this.subject, jc.encode( data ) );
+      console.log( 'Event published to subject', this.subject, this.stream );
 
     } catch ( reason: any ) {
-      throw new Error( reason );
+      console.error( reason );
     }
   }
 }

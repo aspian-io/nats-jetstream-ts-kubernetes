@@ -6,9 +6,9 @@ import { TaxonomyCreatedEvent } from "./taxonomy-created-event";
 import { TaxonomyUpdatedEvent } from "./taxonomy-updated-event";
 
 export class TaxonomyUpdatedListener extends Listener<TaxonomyUpdatedEvent> {
-  stream: Streams.Taxonomy = Streams.Taxonomy;
+  stream: Streams = Streams.Post;
   subject: Subjects.TaxonomyUpdated = Subjects.TaxonomyUpdated;
-  queueGroupName = 'taxonomy-service';
+  queueGroupName = 'post-service';
   onMessage ( data: TaxonomyCreatedEvent[ 'data' ], msg: JsMsg ) {
     console.log( `Event Data #${ msg.seq } - `, data );
     msg.ack();

@@ -3,15 +3,13 @@ import { Streams } from './streams';
 import { Subjects } from "./subjects";
 
 interface Event {
-  stream: Streams;
   subject: Subjects;
   data: any;
 }
 
 export abstract class Listener<T extends Event> {
-  abstract stream: T[ 'stream' ];
+  abstract stream: Streams;
   abstract subject: T[ 'subject' ];
-  abstract queueGroupName: string;
   abstract onMessage ( data: T[ 'data' ], msg: JsMsg ): void;
   private natsConnection: NatsConnection;
   protected ackWait = 5 * 1000;
@@ -21,12 +19,12 @@ export abstract class Listener<T extends Event> {
   }
 
   consumerOptions () {
-    const durableName = `${ this.subject.replace( '.', '-' ) }-durable`;
+    const durableName = `str-${ this.stream }-sub-${ this.subject.replace( '.', '-' ) }-durable`;
 
     const opts = consumerOpts();
     opts.deliverAll();
-    opts.deliverTo( createInbox( this.queueGroupName ) );
-    opts.queue( this.queueGroupName );
+    opts.deliverTo( createInbox( this.stream ) );
+    opts.queue( this.stream );
     opts.durable( durableName );
     opts.ackWait( this.ackWait );
     opts.manualAck();
@@ -55,7 +53,7 @@ export abstract class Listener<T extends Event> {
 
       ( async () => {
         for await ( const msg of subscription ) {
-          console.log( `Message received: ${ this.subject } / ${ this.queueGroupName }` );
+          console.log( `Message received: ${ this.subject } / ${ this.stream }` );
           const jc = JSONCodec<T[ 'data' ]>();
           const parsedData = jc.decode( msg.data );
           this.onMessage( parsedData, msg );
