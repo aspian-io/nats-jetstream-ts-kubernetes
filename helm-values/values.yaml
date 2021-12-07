@@ -4,11 +4,10 @@ nats:
   jetstream:
     enabled: true
 
-    fileStorage:
+    memStorage:
       enabled: true
-      storageDirectory: /nats-js-data/
-      existingClaim: nats-js-disk
-      claimStorageSize: 3Gi
+      size: 2Gi
+
 natsbox:
   enabled: false
   image: nats:alpine

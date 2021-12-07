@@ -1,9 +1,9 @@
 import { Streams } from "./streams";
 import { Subjects } from "./subjects";
 
-export interface TaxonomyCreatedEvent {
+export interface TaxonomyCreatedTestEvent {
   stream: Streams.Taxonomy;
-  subject: Subjects.TaxonomyCreated;
+  subject: Subjects.TaxonomyCreatedTest;
   data: {
     type: string;
     description: string;

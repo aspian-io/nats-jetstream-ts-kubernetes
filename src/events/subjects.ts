@@ -1,3 +1,4 @@
 export enum Subjects {
-  TaxonomyCreated = "taxonomy:created",
+  TaxonomyCreated = "taxonomy.created",
+  TaxonomyCreatedTest = "taxonomy.createdTest",
 }

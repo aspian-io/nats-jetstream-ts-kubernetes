@@ -1,5 +1,6 @@
 import { connect, JSONCodec } from 'nats';
 import { TaxonomyCreatedPublisher } from './events/taxonomy-created-publisher';
+import { TaxonomyCreatedTestPublisher } from './events/taxonomy-created-test-publisher';
 
 console.clear();
 
@@ -19,7 +20,19 @@ connect( { servers: 'http://localhost:4222', name: 'adrian' } )
         slug: 'cat-1'
       } );
     } catch ( err ) {
-      console.log( err )
+      console.log( 'first', err )
+    }
+
+    const publisher2 = new TaxonomyCreatedTestPublisher( nc );
+    try {
+      await publisher2.publish( {
+        type: 'CATEGORY-TEST',
+        description: '',
+        term: "cat 1 test",
+        slug: 'cat-1-test'
+      } );
+    } catch ( err ) {
+      console.log( 'last', err )
     }
   } )
   .catch( err => {
