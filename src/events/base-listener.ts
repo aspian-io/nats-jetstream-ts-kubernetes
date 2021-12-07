@@ -21,14 +21,17 @@ export abstract class Listener<T extends Event> {
   }
 
   consumerOptions () {
+    const durableName = `${ this.subject.replace( '.', '-' ) }-durable`;
+
     const opts = consumerOpts();
     opts.deliverAll();
     opts.deliverTo( createInbox( this.queueGroupName ) );
     opts.queue( this.queueGroupName );
-    opts.durable( this.queueGroupName );
+    opts.durable( durableName );
     opts.ackWait( this.ackWait );
     opts.manualAck();
     opts.ackExplicit();
+
     return opts;
   }
 
@@ -50,7 +53,7 @@ export abstract class Listener<T extends Event> {
         this.consumerOptions()
       );
 
-      const done = ( async () => {
+      ( async () => {
         for await ( const msg of subscription ) {
           console.log( `Message received: ${ this.subject } / ${ this.queueGroupName }` );
           const jc = JSONCodec<T[ 'data' ]>();
@@ -58,6 +61,7 @@ export abstract class Listener<T extends Event> {
           this.onMessage( parsedData, msg );
         }
       } )();
+
     } catch ( err ) {
       console.error( err );
     }

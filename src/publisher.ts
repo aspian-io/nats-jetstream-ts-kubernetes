@@ -1,19 +1,20 @@
 import { connect, JSONCodec } from 'nats';
 import { TaxonomyCreatedPublisher } from './events/taxonomy-created-publisher';
-import { TaxonomyCreatedTestPublisher } from './events/taxonomy-created-test-publisher';
+import { TaxonomyUpdatedPublisher } from './events/taxonomy-updated-publisher';
 
 console.clear();
 
 // create a codec
 const jc = JSONCodec();
 
-connect( { servers: 'http://localhost:4222', name: 'adrian' } )
+connect( { servers: 'http://localhost:4222', name: 'test' } )
   .then( async ( nc ) => {
     console.log( `publisher connected to ${ nc.getServer() }` );
 
-    const publisher = new TaxonomyCreatedPublisher( nc );
+    // First Publish for test
+    const createPublisher = new TaxonomyCreatedPublisher( nc );
     try {
-      await publisher.publish( {
+      await createPublisher.publish( {
         type: 'CATEGORY',
         description: '',
         term: "cat 1",
@@ -23,17 +24,19 @@ connect( { servers: 'http://localhost:4222', name: 'adrian' } )
       console.log( 'first', err )
     }
 
-    const publisher2 = new TaxonomyCreatedTestPublisher( nc );
+    // Second Publish for test
+    const updatePublisher = new TaxonomyUpdatedPublisher( nc );
     try {
-      await publisher2.publish( {
-        type: 'CATEGORY-TEST',
+      await updatePublisher.publish( {
+        type: 'CATEGORY-UPDATED',
         description: '',
-        term: "cat 1 test",
-        slug: 'cat-1-test'
+        term: "cat 1 updated",
+        slug: 'cat-1-updated'
       } );
     } catch ( err ) {
       console.log( 'last', err )
     }
+
   } )
   .catch( err => {
     console.log( `error connecting to NATS server: `, err );

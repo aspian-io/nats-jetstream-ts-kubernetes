@@ -1,4 +1,4 @@
-import { JSONCodec, NatsConnection, StreamSource } from 'nats';
+import { JSONCodec, NatsConnection } from 'nats';
 import { Streams } from './streams';
 import { Subjects } from "./subjects";
 
