@@ -44,18 +44,22 @@ export abstract class Listener<T extends Event> {
     }
 
     const jetStreamClient = this.natsConnection.jetstream();
-    const subscription = await jetStreamClient.subscribe(
-      this.subject,
-      this.consumerOptions()
-    );
+    try {
+      const subscription = await jetStreamClient.subscribe(
+        this.subject,
+        this.consumerOptions()
+      );
 
-    const done = ( async () => {
-      for await ( const msg of subscription ) {
-        console.log( `Message received: ${ this.subject } / ${ this.queueGroupName }` );
-        const jc = JSONCodec<T[ 'data' ]>();
-        const parsedData = jc.decode( msg.data );
-        this.onMessage( parsedData, msg );
-      }
-    } )();
+      const done = ( async () => {
+        for await ( const msg of subscription ) {
+          console.log( `Message received: ${ this.subject } / ${ this.queueGroupName }` );
+          const jc = JSONCodec<T[ 'data' ]>();
+          const parsedData = jc.decode( msg.data );
+          this.onMessage( parsedData, msg );
+        }
+      } )();
+    } catch ( err ) {
+      console.error( err );
+    }
   }
 }
