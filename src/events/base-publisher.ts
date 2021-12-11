@@ -1,4 +1,5 @@
 import { JSONCodec, NatsConnection } from 'nats';
+import { addStream } from './helpers/add-stream';
 import { Streams } from './streams';
 import { Subjects } from "./subjects";
 
@@ -25,9 +26,13 @@ export abstract class Publisher<T extends Event> {
     try {
       // check if stream is existed
       await jsm.streams.info( this.stream );
-    } catch ( err ) {
-      // stream not found so we add it
-      await jsm.streams.add( { name: this.stream, subjects: [ `${ this.stream }.*` ] } );
+    } catch ( err: any ) {
+      if ( err.code === '404' ) {
+        // stream not found so we add it
+        await addStream( jsm, this.stream );
+      } else {
+        console.log( 'Problem getting stream info' );
+      }
     }
 
     const jetStreamClient = this.natsConnection.jetstream();
