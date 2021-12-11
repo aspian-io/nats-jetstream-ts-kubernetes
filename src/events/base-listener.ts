@@ -21,7 +21,7 @@ export abstract class Listener<T extends Event> {
   }
 
   consumerOptions () {
-    const durableName = `str-${ this.stream }-sub-${ this.subject.replace( '.', '-' ) }-durable`;
+    const durableName = `q-${ this.queueGroupName }-sub-${ this.subject.replace( '.', '-' ) }-durable`;
     const jc = JSONCodec<T[ 'data' ]>();
 
     const opts = consumerOpts();
