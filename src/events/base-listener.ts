@@ -11,6 +11,7 @@ interface Event {
 export abstract class Listener<T extends Event> {
   abstract stream: T[ 'stream' ];
   abstract subject: T[ 'subject' ];
+  abstract queueGroupName: string;
   abstract onMessage ( data: T[ 'data' ], msg: JsMsg ): void;
   private natsConnection: NatsConnection;
   protected ackWait = 5 * 1000;
@@ -24,10 +25,10 @@ export abstract class Listener<T extends Event> {
     const jc = JSONCodec<T[ 'data' ]>();
 
     const opts = consumerOpts();
-    opts.queue( 'me-queue' );
+    opts.queue( this.queueGroupName );
     opts.deliverAll();
     opts.deliverTo( durableName );
-    opts.deliverGroup( 'me-queue' )
+    opts.deliverGroup( this.queueGroupName )
     opts.durable( durableName );
     opts.manualAck();
     opts.ackExplicit();
