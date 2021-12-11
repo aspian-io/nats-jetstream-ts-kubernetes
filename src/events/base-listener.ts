@@ -3,12 +3,13 @@ import { Streams } from './streams';
 import { Subjects } from "./subjects";
 
 interface Event {
+  stream: Streams;
   subject: Subjects;
   data: any;
 }
 
 export abstract class Listener<T extends Event> {
-  abstract stream: Streams;
+  abstract stream: T[ 'stream' ];
   abstract subject: T[ 'subject' ];
   abstract onMessage ( data: T[ 'data' ], msg: JsMsg ): void;
   private natsConnection: NatsConnection;
@@ -20,46 +21,35 @@ export abstract class Listener<T extends Event> {
 
   consumerOptions () {
     const durableName = `str-${ this.stream }-sub-${ this.subject.replace( '.', '-' ) }-durable`;
+    const jc = JSONCodec<T[ 'data' ]>();
 
     const opts = consumerOpts();
+    opts.queue( 'me-queue' );
     opts.deliverAll();
-    opts.deliverTo( createInbox( this.stream ) );
-    opts.queue( this.stream );
+    opts.deliverTo( durableName );
+    opts.deliverGroup( 'me-queue' )
     opts.durable( durableName );
-    opts.ackWait( this.ackWait );
     opts.manualAck();
     opts.ackExplicit();
+    opts.ackWait( this.ackWait );
+    opts.callback( ( _err, msg ) => {
+      if ( msg ) {
+        console.log( `Message received: ${ msg.subject } / ${ msg.info.stream }` );
+        // console.log( `Event Data #${ msg.seq } - `, jc.decode( msg.data ) );
+        this.onMessage( jc.decode( msg.data ), msg );
+      }
+    } );
 
     return opts;
   }
 
   async listen () {
-    const jsm = await this.natsConnection.jetstreamManager();
-
-    try {
-      // check if stream is existed
-      await jsm.streams.info( this.stream );
-    } catch ( err ) {
-      // stream not found so we add it
-      await jsm.streams.add( { name: this.stream, subjects: [ `*.>` ] } );
-    }
-
     const jetStreamClient = this.natsConnection.jetstream();
     try {
-      const subscription = await jetStreamClient.subscribe(
+      await jetStreamClient.subscribe(
         this.subject,
         this.consumerOptions()
       );
-
-      ( async () => {
-        for await ( const msg of subscription ) {
-          console.log( `Message received: ${ this.subject } / ${ this.stream }` );
-          const jc = JSONCodec<T[ 'data' ]>();
-          const parsedData = jc.decode( msg.data );
-          this.onMessage( parsedData, msg );
-        }
-      } )();
-
     } catch ( err ) {
       console.error( err );
     }

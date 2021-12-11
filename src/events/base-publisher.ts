@@ -3,12 +3,13 @@ import { Streams } from './streams';
 import { Subjects } from "./subjects";
 
 interface Event {
+  stream: Streams;
   subject: Subjects;
   data: any;
 }
 
 export abstract class Publisher<T extends Event> {
-  abstract stream: Streams;
+  abstract stream: T[ 'stream' ];
   abstract subject: T[ 'subject' ];
   private natsConnection: NatsConnection;
 
@@ -26,7 +27,7 @@ export abstract class Publisher<T extends Event> {
       await jsm.streams.info( this.stream );
     } catch ( err ) {
       // stream not found so we add it
-      await jsm.streams.add( { name: this.stream, subjects: [ `*.>` ] } );
+      await jsm.streams.add( { name: this.stream, subjects: [ `${ this.stream }.*` ] } );
     }
 
     const jetStreamClient = this.natsConnection.jetstream();

@@ -1,6 +1,6 @@
 import { connect } from 'nats';
-import { TaxonomyCreatedListener } from './events/taxonomy-created-listener';
-import { TaxonomyUpdatedListener } from './events/taxonomy-updated-listener';
+import { TestCreatedListener } from './events/test-created-listener';
+import { TestUpdatedListener } from './events/test-updated-listener';
 
 console.clear();
 
@@ -9,9 +9,9 @@ connect( { servers: 'http://localhost:4222', name: 'test' } )
     console.log( `listener connected to ${ nc.getServer() }` );
 
     // Durable Listening for create publisher
-    await new TaxonomyCreatedListener( nc ).listen();
+    await new TestCreatedListener( nc ).listen();
     // Durable Listening for update publisher
-    await new TaxonomyUpdatedListener( nc ).listen();
+    await new TestUpdatedListener( nc ).listen();
 
   } )
   .catch( err => {

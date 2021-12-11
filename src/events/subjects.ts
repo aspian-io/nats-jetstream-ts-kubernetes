@@ -1,4 +1,4 @@
 export enum Subjects {
-  TaxonomyCreated = "taxonomy.created",
-  TaxonomyUpdated = "taxonomy.ggg",
+  TestCreated = "test.created",
+  TestUpdated = "test.updated",
 }

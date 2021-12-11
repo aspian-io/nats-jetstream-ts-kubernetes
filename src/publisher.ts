@@ -1,6 +1,6 @@
 import { connect, JSONCodec } from 'nats';
-import { TaxonomyCreatedPublisher } from './events/taxonomy-created-publisher';
-import { TaxonomyUpdatedPublisher } from './events/taxonomy-updated-publisher';
+import { TestCreatedPublisher } from './events/test-created-publisher';
+import { TestUpdatedPublisher } from './events/test-updated-publisher';
 
 console.clear();
 
@@ -11,8 +11,8 @@ connect( { servers: 'http://localhost:4222', name: 'test' } )
   .then( async ( nc ) => {
     console.log( `publisher connected to ${ nc.getServer() }` );
 
-    // First Publish for test
-    const createPublisher = new TaxonomyCreatedPublisher( nc );
+    //First Publish for test
+    const createPublisher = new TestCreatedPublisher( nc );
     try {
       await createPublisher.publish( {
         type: 'CATEGORY',
@@ -24,8 +24,8 @@ connect( { servers: 'http://localhost:4222', name: 'test' } )
       console.log( 'first', err )
     }
 
-    // Second Publish for test
-    const updatePublisher = new TaxonomyUpdatedPublisher( nc );
+    // // Second Publish for test
+    const updatePublisher = new TestUpdatedPublisher( nc );
     try {
       await updatePublisher.publish( {
         type: 'CATEGORY-UPDATED',
