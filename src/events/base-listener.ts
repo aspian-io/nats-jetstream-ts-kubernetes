@@ -36,8 +36,7 @@ export abstract class Listener<T extends Event> {
     opts.ackWait( this.ackWait );
     opts.callback( ( _err, msg ) => {
       if ( msg ) {
-        console.log( `Message received: ${ msg.subject } / ${ msg.info.stream }` );
-        // console.log( `Event Data #${ msg.seq } - `, jc.decode( msg.data ) );
+        console.log( `${ this.queueGroupName } recieved message from subject: ${ msg.subject } - stream: ${ this.stream }` );
         this.onMessage( jc.decode( msg.data ), msg );
       }
     } );

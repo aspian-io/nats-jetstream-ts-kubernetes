@@ -39,7 +39,7 @@ export abstract class Publisher<T extends Event> {
 
     try {
       await jetStreamClient.publish( this.subject, jc.encode( data ) );
-      console.log( 'Event published to subject', this.subject, this.stream );
+      console.log( `${ this.stream } service publishes event to subject: ${ this.subject }` );
 
     } catch ( reason: any ) {
       console.error( reason );
