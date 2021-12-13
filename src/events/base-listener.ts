@@ -36,7 +36,11 @@ export abstract class Listener<T extends Event> {
     opts.ackWait( this.ackWait );
     opts.callback( ( _err, msg ) => {
       if ( msg ) {
-        console.log( `${ this.queueGroupName } recieved message from subject: ${ msg.subject } - stream: ${ this.stream }` );
+        const adjustedQName = this.queueGroupName.replace( '-', ' ' ).toUpperCase();
+        const adjustedSubjName = msg.subject.toUpperCase();
+        const adjustedStrName = this.stream.toUpperCase();
+        console.log( `${ adjustedQName } recieved message from the subject: ${ adjustedSubjName } / ${ adjustedStrName } stream` );
+
         this.onMessage( jc.decode( msg.data ), msg );
       }
     } );

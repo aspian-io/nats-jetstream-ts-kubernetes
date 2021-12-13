@@ -39,8 +39,10 @@ export abstract class Publisher<T extends Event> {
 
     try {
       await jetStreamClient.publish( this.subject, jc.encode( data ) );
-      console.log( `${ this.stream } service publishes event to subject: ${ this.subject }` );
 
+      const adjustedSubjName = this.subject.toUpperCase();
+      const adjustedStrName = `${ this.stream.toUpperCase() } SERVICE`;
+      console.log( `${ adjustedStrName } publishes event to the subject: ${ adjustedSubjName }` );
     } catch ( reason: any ) {
       console.error( reason );
     }
