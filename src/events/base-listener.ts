@@ -37,7 +37,7 @@ export abstract class Listener<T extends Event> {
     opts.callback( ( _err, msg ) => {
       if ( msg ) {
         const adjustedQName = this.queueGroupName.replace( '-', ' ' );
-        console.log( `[${ adjustedQName }] recieved a message from the subject: [${ msg.subject } / ${ this.stream }] stream` );
+        console.log( `[${ adjustedQName }] recieved a message from the subject: [${ msg.subject } / ${ this.stream } service]` );
 
         this.onMessage( jc.decode( msg.data ), msg );
       }
